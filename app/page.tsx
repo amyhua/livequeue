@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 import Image from 'next/image'
 import styles from './page.module.css';
@@ -131,7 +132,7 @@ export default function Home(props: any) {
         i++;
       }
       if (!done) {
-        const query = await table.select({
+        const query = table.select({
           fields: ['Phone', 'Name', 'Created At'],
           filterByFormula: `AND({Created At} >= TODAY(), Status = '${InviteStatus.CancelAsNoShow}', Phone = '${tel}')`,
           sort: [{ field: 'Created At'}]
@@ -154,11 +155,11 @@ export default function Home(props: any) {
     } finally {
       setLoadingPlaceInQueue(false);
     }
-  }, []);
+  }, [recordId]);
   const getOrCreateInvite = useCallback(async (name: string, tel: string) => {
     try {
       const table = base.table('Live Queue');
-      const findQuery = await table.select({
+      const findQuery = table.select({
         filterByFormula: `AND(Phone = '${tel}', Status = '${InviteStatus.InQueue}', {Created At} >= TODAY())`
       });
       const found = await findQuery.all();
@@ -168,7 +169,7 @@ export default function Home(props: any) {
           placeNum: num
         };
       }
-      const othersQuery = await table.select({
+      const othersQuery = table.select({
         fields: ['Phone', 'Name', 'Created At', 'Order'],
         filterByFormula: `AND(Status = '${InviteStatus.InQueue}', {Created At} >= TODAY())`,
         sort: [{ field: 'Order', direction: 'desc' }]
@@ -201,7 +202,7 @@ export default function Home(props: any) {
     } catch(err) {
       return Promise.reject(err);
     }
-  }, [activeEventId]);
+  }, [activeEventId, getPlaceNum]);
   const onInvite = async (e?: any) => {
     if (e) e.preventDefault();
     setInvited(false);
@@ -228,7 +229,7 @@ export default function Home(props: any) {
     })
   };
   const disabled = submitting || !(tel.length === '(###) ###-####'.length);
-  const onRefresh = async (e?: any) => {
+  const onRefresh = useCallback(async (e?: any) => {
     if (e) e.preventDefault();
     try {
       const num = await getPlaceNum(tel, false);
@@ -239,7 +240,7 @@ export default function Home(props: any) {
       }
       setError(String(err));
     }
-  };
+  }, [getPlaceNum, tel]);
   const reenterQueue = () => {
     onInvite();
   };
@@ -247,14 +248,15 @@ export default function Home(props: any) {
   useEffect(() => {
     if (!submitted) return;
     window.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     interval = setInterval(() => {
       onRefresh();
     }, 20 * 1000);
     return () => {
       if (interval) clearInterval(interval);
     }
-  }, [submitted]);
-  const getInviteByRecordId = async (recordId: string) => {
+  }, [submitted, onRefresh]);
+  const getInviteByRecordId = useCallback(async (recordId: string) => {
     const table = base.table('Live Queue');
     const findQuery = await table.select({
       fields: ['Name', 'Phone', 'Status', 'Event'],
@@ -285,7 +287,7 @@ export default function Home(props: any) {
     } else {
       setRecordId('');
     }
-  };
+  }, [getPlaceNum]);
   const onCancelInvite = (e: any) => {
     e.preventDefault();
     cancelInvite(recordId)
@@ -298,7 +300,7 @@ export default function Home(props: any) {
   };
   useEffect(() => {
     if (recordId) getInviteByRecordId(recordId);
-  }, [recordId]);
+  }, [recordId, getInviteByRecordId]);
   const loadActiveEvent = async () => {
     try {
       const table = base.table('Events');
@@ -323,6 +325,7 @@ export default function Home(props: any) {
       if (isHidden) {
         if (interval) clearInterval(interval);
       } else {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         interval = setInterval(() => {
           onRefresh();
         }, 20 * 1000);
