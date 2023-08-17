@@ -1,0 +1,48 @@
+.container {
+  font-family: 'COM4t Drify', serif;
+  text-align: center;
+  margin: 1rem auto 2rem;
+  max-width: 700px;
+  padding: 24px;
+  overflow-x: hidden;
+}
+.header {
+  color: #f4d662;
+  margin: 0.5rem 0;
+}
+.container h2 {
+  font-weight: bold;
+}
+.instruction {
+  margin-top: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.container .phoneInput {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0;
+}
+.container input {
+  background-color: transparent;
+  padding: 7px;
+  width: 100%;
+  text-align: center;
+  border: solid 1px rgba(233, 255, 40, 0.37);
+}
+.container input::placeholder {
+  color: #ddd;
+}
+.submitBtn {
+  background-color: #f4d662;
+  color: black;
+  display: block;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+.container input[type='checkbox'] {
+  padding: 15px;
+  margin-right: 0.5rem;
+  position: relative;
+  top: -2px;
+  max-width: 20px;
+}

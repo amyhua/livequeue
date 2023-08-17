@@ -1,3 +1,13 @@
+### Live Queue App for Beneficent Coaching & Tarot
+
+I built this app for a friend ([beneficent.coach](//beneficent.coach)) who was dealing with long queues of people waiting for one of his tarot card readings. One can scan a QR code to this website, fill in their email and name, and join a live queue, backed by an [airtable](//airtable.com) that he could manage invitations from. Mailing list signups were also gathered here.
+
+* Frontend website for filling out a form and joining a mailing list.
+* SMS integration. Users get notified of their turn when they've signed up, are up next, a 5 minute reminder, and marked as no-show + canceled.
+* User invitations tracked names, telephones, signups to the mailing list (optional), and a link to the live event they attended.
+
+----
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
