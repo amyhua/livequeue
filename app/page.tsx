@@ -281,7 +281,7 @@ export default function Home(props: any) {
           if ((err as ErrorObj).error === ErrorType.NoShow) {
             return setIsNoShow(true);
           }
-          setError(String(err));
+          setError(String((err as ErrorObj).message));
         }
       }
     } else {
@@ -295,7 +295,7 @@ export default function Home(props: any) {
       setCanceledPlaceInQueue(true);
     })
     .catch(err => {
-      setError(String(err));
+      setError(String((err as ErrorObj).message));
     })
   };
   useEffect(() => {

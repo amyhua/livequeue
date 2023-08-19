@@ -5,6 +5,7 @@
   max-width: 700px;
   padding: 24px;
   overflow-x: hidden;
+  background-color: black;
 }
 .header {
   color: #f4d662;
