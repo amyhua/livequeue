@@ -22,11 +22,13 @@ function phoneFormat(input: string): string {//returns (###) ###-####
   return input;
 }
 
-const ErrorMessage = ({ error }: { error: string }) => (
+type ErrorObj = { error: ErrorType, message: string; }
+
+const ErrorMessage = ({ error }: { error: ErrorObj | string }) => (
   <div className='font-sans text-xs mb-4 mx-auto py-2 px-4 rounded-md bg-red-900 text-red-200'>
     <strong className='font-semibold'>We're sorry, something went wrong. Please let Ben know.</strong>
     <div className='my-1 text-xs text-red-300 font-normal'>
-      {error}
+      {typeof error === 'string' ? error : error.message}
     </div>
   </div>
 )
@@ -47,8 +49,6 @@ enum ErrorType {
   PlaceError = 'Place Error',
   NoShow = 'No Show'
 }
-
-type ErrorObj = { error: ErrorType, message: string; }
 
 const cancelInvite = async (recordId: string) => {
   if (!recordId) return;
