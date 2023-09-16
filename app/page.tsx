@@ -3,8 +3,9 @@
 import Image from 'next/image'
 import styles from './page.module.css';
 import classNames from 'classnames';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import Airtable from 'airtable';
+import SMSClient from '@/modules/smsClient';
 
 if (!process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID) throw new Error(`Undefined base ID`);
 
@@ -76,6 +77,7 @@ export default function Home(props: any) {
   const [mailingListSignupSubmitting, setMailingListSignupSubmitting] = useState(false);
   const [mailingListSignupSubscribed, setMailingListSignupSubscribed] = useState(false);
   const [activeEventId, setActiveEventId] = useState('');
+  const smsClient = useMemo(() => new SMSClient(), []);
   const onMailingListSignup = async (e: any) => {
     e.preventDefault();
     if (!mailingListEmail) return;
@@ -125,8 +127,10 @@ export default function Home(props: any) {
         if (records[i].get('Phone') === tel) {
           done = true;
           if (updateUrlToRecordId  && records[i].getId() !== recordId) {
+            const resp = await smsClient.sendQueueSuccess(name, i, tel);
+            console.log('resp!', resp);
             setRecordId(records[i].getId());
-            if (window) window.location.replace(window.location.pathname + `?invite=${records[i].getId()}`);
+            // if (window) window.location.replace(window.location.pathname + `?invite=${records[i].getId()}`);
           }
         }
         i++;
@@ -195,9 +199,10 @@ export default function Home(props: any) {
           }
         }
       ]);
+      const placeNum = records.length + 1;
       return {
         ...created,
-        placeNum: records.length + 1
+        placeNum
       };
     } catch(err) {
       return Promise.reject(err);
@@ -213,11 +218,11 @@ export default function Home(props: any) {
       tel,
     };
     getOrCreateInvite(name, tel)
-    .then(({ placeNum, ...resp }) => {
+    .then(async ({ placeNum, ...resp }: any) => {
       setInvited(true);
       setNumInQueue(placeNum);
     })
-    .catch(({ error, message }) => {
+    .catch(({ error, message }: any) => {
       if (error === ErrorType.NoShow) {
         return setIsNoShow(true);
       }
