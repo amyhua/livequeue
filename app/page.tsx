@@ -5,7 +5,6 @@ import styles from './page.module.css';
 import classNames from 'classnames';
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import Airtable from 'airtable';
-import SMSClient from '@/modules/smsClient';
 
 if (!process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID) throw new Error(`Undefined base ID`);
 
@@ -77,7 +76,6 @@ export default function Home(props: any) {
   const [mailingListSignupSubmitting, setMailingListSignupSubmitting] = useState(false);
   const [mailingListSignupSubscribed, setMailingListSignupSubscribed] = useState(false);
   const [activeEventId, setActiveEventId] = useState('');
-  const smsClient = useMemo(() => new SMSClient(), []);
   const onMailingListSignup = async (e: any) => {
     e.preventDefault();
     if (!mailingListEmail) return;
